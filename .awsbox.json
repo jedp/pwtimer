@@ -1,6 +1,7 @@
 {
   "processes": [
-    "bin/pwtimer"
+    "bin/pwtimer",
+    "bin/app"
   ],
 
   "hooks": {

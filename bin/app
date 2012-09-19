@@ -1,0 +1,54 @@
+const express = require('express'),
+      redis = require('redis').createClient();
+
+var app = module.exports = express.createServer();
+
+// Configuration
+
+app.configure(function(){
+  app.set('view engine', 'jade');
+  app.use(express.bodyParser());
+  app.use(express.methodOverride());
+  app.use(app.router);
+});
+
+app.configure('development', function(){
+  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+});
+
+app.configure('production', function(){
+  app.use(express.errorHandler());
+});
+
+// Routes
+
+app.get('/', function(req, res) {
+  redis.get('pwt:headings:prod', function(err, data) {
+    if (err) {
+      console.log("ERROR: redis.get:", err);
+      return res.end(500);
+    }
+
+    var headings = data.split(',');
+    redis.zrange('pwt:intervals:prod', 0, -1, function(err, data) {
+      if (err) {
+        console.log("ERROR: redis.zrange", err);
+        return res.end(500);
+      }
+
+      var intervals = [];
+      data.forEach(function(row) {
+        intervals.push(row.split(','));
+      });
+
+      return res.json({headings: headings, data: intervals});
+    });
+  });
+});
+
+// run
+
+if (!module.parent) {
+  app.listen(process.env.PORT || 3000);
+  console.log("Listening on port %d in %s mode", app.address().port, app.settings.env);
+}
