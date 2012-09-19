@@ -75,7 +75,7 @@ var getIntervals = function getIntervals(uri, data) {
 /*
  * Store the intervals in redis.  Only keep data from the past 30 days.
  */
-var storeIntervals = function storeIntervals(intervals) {
+var storeIntervals = function storeIntervals(site, intervals) {
   var one_month_ago = 30 * 24 * 60 * 60 * 1000;
   console.log(intervals.times);
   redis.zremrangebyscore('pwt:intervals:'+site, -Infinity, one_month_ago);
@@ -97,7 +97,7 @@ var runOnce = module.exports.runOnce = function runOnce(site, uri, callback) {
     }
     try {
       var intervals = getIntervals(uri, data);
-      storeIntervals(intervals);
+      storeIntervals(site, intervals);
       cancelAccount(site, data);
     } catch (err) {
       console.log("ERROR:", err);

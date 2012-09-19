@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 
-const runOnce = require("./pwtimer").runOnce;
+const runOnce = require("../pwtimer").runOnce;
 
 const TEN_MINUTES = 10 * 60 * 1000;
 
 if (!module.parent) {
+
+  console.log("running.  sampling every 10 minutes");
   var site = 'prod';
   var uri = 'email_with_assertion';
 
