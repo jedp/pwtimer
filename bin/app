@@ -1,4 +1,8 @@
+#!/usr/bin/env node
 /* -*- mode: js2 -*- */
+
+const express = require('express'),
+      redis = require('redis').createClient();
 
 var app = module.exports = express.createServer();
 

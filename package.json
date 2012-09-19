@@ -6,8 +6,7 @@
   "private": "true",
 
   "dependencies": {
-    "express": "2.5.8",
-    "jade": "0.27.2",
+    "express": "2.5.9",
     "redis": "0.8.1",
     "request": "2.11.4"
   },
