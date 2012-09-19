@@ -1,0 +1,25 @@
+{
+  "name": "pwtimer",
+  "description": "Keeps track of how long persona takes to do things over time",
+  "version": "0.0.1",
+
+  "private": "true",
+
+  "dependencies": {
+   "express": "2.5.8",
+    "jade": "0.27.2",
+    "redis": "0.8.1",
+    "request": "2.11.4"
+  },
+  "optionalDependencies": {
+    "hiredis": "0.1.14"
+  },
+  "devDependencies": {
+    "awsbox": "0.2.17",
+    "vows": "0.6.4"
+  },
+  "scripts": {
+    "start": "app",
+    "test": "vows test/*_vows.js --spec"
+  }
+}
