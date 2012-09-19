@@ -19,7 +19,7 @@
     "vows": "0.6.4"
   },
   "scripts": {
-    "start": "app",
+    "start": "pwtimer",
     "test": "vows test/*_vows.js --spec"
   }
 }

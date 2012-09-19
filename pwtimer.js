@@ -10,7 +10,6 @@ const SITES = {
 };
 
 const AUDIENCE = "https%3A%2F%2Fjed.gov";
-const TEN_MINUTES = 10 * 60 * 1000;
 
 /*
  * email with assertion is known as "email a la mode" in some circles.
@@ -87,7 +86,7 @@ var storeIntervals = function storeIntervals(intervals) {
 
 };
 
-var runOnce = function runOnce(site, uri, callback) {
+var runOnce = module.exports.runOnce = function runOnce(site, uri, callback) {
   testEmailWithAssertion(site, uri, function(err, data) {
     if (err) {
       console.log("ERROR:", err);
@@ -105,11 +104,3 @@ var runOnce = function runOnce(site, uri, callback) {
     }
   });
 };
-
-if (!module.parent) {
-  var site = 'prod';
-  var uri = 'email_with_assertion';
-
-  runOnce(site, uri, console.log);
-  setInterval(function() { runOnce(site, uri, console.log); }, TEN_MINUTES);
-}

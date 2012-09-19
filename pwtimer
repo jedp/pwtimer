@@ -1,0 +1,13 @@
+#!/usr/bin/env node
+
+const runOnce = require("./pwtimer").runOnce;
+
+const TEN_MINUTES = 10 * 60 * 1000;
+
+if (!module.parent) {
+  var site = 'prod';
+  var uri = 'email_with_assertion';
+
+  runOnce(site, uri, console.log);
+  setInterval(function() { runOnce(site, uri, console.log); }, TEN_MINUTES);
+}
