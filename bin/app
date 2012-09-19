@@ -1,5 +1,4 @@
-const express = require('express'),
-      redis = require('redis').createClient();
+/* -*- mode: js2 -*- */
 
 var app = module.exports = express.createServer();
 
