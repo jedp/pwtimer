@@ -2,6 +2,7 @@
 /* -*- mode: js2 -*- */
 
 const express = require('express'),
+      path = require('path'),
       redis = require('redis').createClient();
 
 var app = module.exports = express.createServer();
@@ -13,6 +14,7 @@ app.configure(function(){
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(app.router);
+  app.use(express.static(path.join(__dirname, '..', '/static')));
 });
 
 app.configure('development', function(){
@@ -25,28 +27,51 @@ app.configure('production', function(){
 
 // Routes
 
-app.get('/', function(req, res) {
+var getJSON = function getJSON(callback) {
   redis.get('pwt:headings:prod', function(err, data) {
-    if (err) {
-      console.log("ERROR: redis.get:", err);
-      return res.end(500);
-    }
+    if (err) return "ERROR: redis.get: " + err.toString();
 
     var headings = data.split(',');
     redis.zrange('pwt:intervals:prod', 0, -1, function(err, data) {
-      if (err) {
-        console.log("ERROR: redis.zrange", err);
-        return res.end(500);
-      }
+      if (err) return "ERROR: redis.zrange: " + err.toString();
 
       var intervals = [];
       data.forEach(function(row) {
         intervals.push(row.split(','));
       });
 
-      return res.json({headings: headings, data: intervals});
+      return callback(null, {headings: headings, intervals: intervals});
     });
   });
+};
+
+var getCSL = function getCSL(callback) {
+  getJSON(function(err, data) {
+    if (err) return callback(err);
+
+    var lines = [];
+    lines.push(data.headings.join(', '));
+    data.intervals.forEach(function(row) {
+      lines.push(row.join(', '));
+    });
+
+    return callback(null, lines.join('\n'));
+  });
+};
+
+app.get('/data.:format', function(req, res) {
+  if (req.params.format === 'csl') {
+    getCSL(function(err, data) {
+      if (err) res.send(err, 500);
+      res.setHeader('content-type', 'text/plain');
+      return res.send(data);
+    });
+  } else {
+    getJSON(function(err, data) {
+      if (err) res.send(err, 500);
+      return res.json(data);
+    });
+  }
 });
 
 // run
